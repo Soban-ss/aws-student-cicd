@@ -1,1 +1,81 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Student Management | AWS CI/CD</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head><body><main><header><div><p class="eyebrow">AWS CI/CD • Flask • PostgreSQL</p><h1>Student Management System</h1><p>Manage student records with a real database and automated deployments.</p></div><span class="pill">● Application online</span></header>{% with messages = get_flashed_messages(with_categories=true) %}{% for category,message in messages %}<div class="alert {{ category }}">{{ message }}</div>{% endfor %}{% endwith %}<section class="panel"><h2>Add student</h2><form method="post" action="{{ url_for('add_student') }}" class="add-form"><label>Register number<input name="register_number" required maxlength="30" placeholder="25MX348"></label><label>Student name<input name="name" required maxlength="120" placeholder="Student name"></label><label>Department<input name="department" required maxlength="80" placeholder="MCA"></label><label>Email<input name="email" type="email" required maxlength="160" placeholder="student@example.com"></label><button>Add student</button></form></section><section class="panel"><div class="list-head"><h2>Student records <span class="count">{{ students|length }} shown</span></h2><form method="get"><input name="q" value="{{ q }}" placeholder="Search name, ID or department"><button class="secondary">Search</button><a href="/">Clear</a></form></div><div class="table-wrap"><table><thead><tr><th>Register no.</th><th>Name</th><th>Department</th><th>Email</th><th>Actions</th></tr></thead><tbody>{% for s in students %}<tr><td>{{ s.register_number }}</td><td>{{ s.name }}</td><td>{{ s.department }}</td><td>{{ s.email }}</td><td><button class="secondary" type="button" onclick="document.getElementById('edit-{{ s.id }}').showModal()">Edit</button><form class="inline" method="post" action="{{ url_for('delete_student',student_id=s.id) }}" onsubmit="return confirm('Delete this student?')"><button class="danger">Delete</button></form><dialog id="edit-{{ s.id }}"><form method="post" action="{{ url_for('edit_student',student_id=s.id) }}"><h2>Edit student</h2><label>Register number<input name="register_number" value="{{ s.register_number }}" required></label><label>Name<input name="name" value="{{ s.name }}" required></label><label>Department<input name="department" value="{{ s.department }}" required></label><label>Email<input type="email" name="email" value="{{ s.email }}" required></label><div class="dialog-actions"><button type="button" class="secondary" onclick="this.closest('dialog').close()">Cancel</button><button>Save changes</button></div></form></dialog></td></tr>{% else %}<tr><td colspan="5" class="empty">No student records found.</td></tr>{% endfor %}</tbody></table></div></section><footer>Deployed with AWS CodePipeline → CodeBuild → Elastic Beanstalk</footer></main></body></html>
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Student Management | AWS CI/CD</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <main>
+        <header>
+            <div>
+                <p class="eyebrow">AWS CI/CD • Flask • PostgreSQL</p>
+                <h1>psg tech</h1>
+                <p>Manage student records with a real database and automated deployments.</p>
+            </div><span class="pill">● Application online</span>
+        </header>{% with messages = get_flashed_messages(with_categories=true) %}{% for category,message in messages %}
+        <div class="alert {{ category }}">{{ message }}</div>{% endfor %}{% endwith %}<section class="panel">
+            <h2>Add student</h2>
+            <form method="post" action="{{ url_for('add_student') }}" class="add-form"><label>Register number<input
+                        name="register_number" required maxlength="30" placeholder="25MX348"></label><label>Student
+                    name<input name="name" required maxlength="120"
+                        placeholder="Student name"></label><label>Department<input name="department" required
+                        maxlength="80" placeholder="MCA"></label><label>Email<input name="email" type="email" required
+                        maxlength="160" placeholder="student@example.com"></label><button>Add student</button></form>
+        </section>
+        <section class="panel">
+            <div class="list-head">
+                <h2>Student records <span class="count">{{ students|length }} shown</span></h2>
+                <form method="get"><input name="q" value="{{ q }}" placeholder="Search name, ID or department"><button
+                        class="secondary">Search</button><a href="/">Clear</a></form>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Register no.</th>
+                            <th>Name</th>
+                            <th>Department</th>
+                            <th>Email</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>{% for s in students %}<tr>
+                            <td>{{ s.register_number }}</td>
+                            <td>{{ s.name }}</td>
+                            <td>{{ s.department }}</td>
+                            <td>{{ s.email }}</td>
+                            <td><button class="secondary" type="button"
+                                    onclick="document.getElementById('edit-{{ s.id }}').showModal()">Edit</button>
+                                <form class="inline" method="post"
+                                    action="{{ url_for('delete_student',student_id=s.id) }}"
+                                    onsubmit="return confirm('Delete this student?')"><button
+                                        class="danger">Delete</button></form>
+                                <dialog id="edit-{{ s.id }}">
+                                    <form method="post" action="{{ url_for('edit_student',student_id=s.id) }}">
+                                        <h2>Edit student</h2><label>Register number<input name="register_number"
+                                                value="{{ s.register_number }}" required></label><label>Name<input
+                                                name="name" value="{{ s.name }}"
+                                                required></label><label>Department<input name="department"
+                                                value="{{ s.department }}" required></label><label>Email<input
+                                                type="email" name="email" value="{{ s.email }}" required></label>
+                                        <div class="dialog-actions"><button type="button" class="secondary"
+                                                onclick="this.closest('dialog').close()">Cancel</button><button>Save
+                                                changes</button></div>
+                                    </form>
+                                </dialog>
+                            </td>
+                        </tr>{% else %}<tr>
+                            <td colspan="5" class="empty">No student records found.</td>
+                        </tr>{% endfor %}</tbody>
+                </table>
+            </div>
+        </section>
+        <footer>Deployed with AWS CodePipeline → CodeBuild → Elastic Beanstalk</footer>
+    </main>
+</body>
+
+</html>
